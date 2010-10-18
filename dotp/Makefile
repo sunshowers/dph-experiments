@@ -29,4 +29,4 @@ vect-seq$(BIN_SUFFIX): dotptest.hs DotPVect.hs
 	$(HSC) $(GENERAL_ARGS) -fdph-seq -o $@ $<
 
 clean:
-	$(RM) $(PROGRAMS)
+	$(RM) $(PROGRAMS) *.o *.hi
