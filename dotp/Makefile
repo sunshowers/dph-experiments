@@ -19,5 +19,14 @@ default: $(PROGRAMS)
 prim-par$(BIN_SUFFIX): dotptest.hs DotPPrim.hs
 	$(HSC) -DUNLIFTED $(GENERAL_ARGS) -fdph-par -o $@ $<
 
+vect-par$(BIN_SUFFIX): dotptest.hs DotPVect.hs
+	$(HSC) $(GENERAL_ARGS) -fdph-par -o $@ $<
+
+prim-seq$(BIN_SUFFIX): dotptest.hs DotPPrim.hs
+	$(HSC) -DUNLIFTED $(GENERAL_ARGS) -fdph-seq -o $@ $<
+
+vect-seq$(BIN_SUFFIX): dotptest.hs DotPVect.hs
+	$(HSC) $(GENERAL_ARGS) -fdph-seq -o $@ $<
+
 clean:
 	$(RM) $(PROGRAMS)
