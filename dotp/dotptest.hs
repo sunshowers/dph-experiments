@@ -1,4 +1,4 @@
-{-# LANGUAGE PArr, ParallelListComp, CPP #-}
+{-# LANGUAGE PArr, CPP #-}
 
 #ifdef UNLIFTED
 import DotPPrim
