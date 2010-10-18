@@ -1,4 +1,3 @@
-{-# OPTIONS -fdph-par -Odph #-}
 {-# LANGUAGE PArr, ParallelListComp, CPP #-}
 
 #ifdef UNLIFTED
