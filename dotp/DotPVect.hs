@@ -14,8 +14,8 @@ dotp v w = dotp_internal (fromPArrayP v) (fromPArrayP w)
 
 {- Given a number of integers, constructs a dot product out of them. -}
 
-dotp_2level start1 start2 start3 start4 len =
-  dotp_internal [:a1..a2:] [:a1..a2:]
+dotp_2level v1 v2 w1 w2 =
+  dotp_internal [:a, ((I.+) a 1), ((I.+) a 2), ((I.+) a 3):] [:b, ((I.+) b 1), ((I.+) b 2), ((I.+) b 3):]
   where
-    a1 = dotp_internal [:start1..((Prelude.+) start1 len):] [:start2..((Prelude.+) start2 len):]
-    a2 = dotp_internal [:start3..((Prelude.+) start3 len):] [:start4..((Prelude.+) start4 len):]
+    a = dotp v1 v2
+    b = dotp w1 w2
