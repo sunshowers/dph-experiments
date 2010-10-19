@@ -12,8 +12,6 @@ dotp :: PArray Int -> PArray Int -> Int
 {-# NOINLINE dotp #-}
 dotp v w = dotp_internal (fromPArrayP v) (fromPArrayP w)
 
-{- Given a number of integers, constructs a dot product out of them. -}
-
 dotp_2level v1 v2 w1 w2 =
   dotp_internal vsum wsum
   where
