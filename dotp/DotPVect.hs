@@ -15,7 +15,7 @@ dotp v w = dotp_internal (fromPArrayP v) (fromPArrayP w)
 {- Given a number of integers, constructs a dot product out of them. -}
 
 dotp_2level v1 v2 w1 w2 =
-  dotp_internal [:a, ((I.+) a 1), ((I.+) a 2), ((I.+) a 3):] [:b, ((I.+) b 1), ((I.+) b 2), ((I.+) b 3):]
+  dotp_internal vsum wsum
   where
-    a = dotp v1 v2
-    b = dotp w1 w2
+    vsum = [: (I.+) x y | x <- (fromPArrayP v1), y <- (fromPArrayP v2) :]
+    wsum = [: (I.+) x y | x <- (fromPArrayP w1), y <- (fromPArrayP w2) :]
