@@ -14,7 +14,7 @@ with the current implementation:
 
 1. The normal `Prelude.+`, `Prelude.-`, `Prelude.*` etc aren't vectorizable,
 since DPH apparently doesn't support type classes. The workaround is to use
-`Data.Array.Parallel.Prelude.Int.+` or Float.+ etc.
+`Data.Array.Parallel.Prelude.Int.+` or `Float.+` etc.
 
 2. Apparently you can't transfer parallel arrays of the type `[:Int:]` between
 vectorized and non-vectorized code. Instead you need to use a wrapper function
