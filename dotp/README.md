@@ -26,7 +26,7 @@ code. We don't want that since it really is the interface between vectorized and
 non-vectorized code. The solution is to mark it as NOINLINE. Ideally we wouldn't
 have to worry about such things at all.
 
-4. enumFromTo isn't vectorizable. This means that code with the order of
+4. `enumFromTo` isn't vectorizable. This means that code with the order of
 instructions doesn't work in purely vectorized code.
 
       a1 = dotp v1 v1
