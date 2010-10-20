@@ -13,8 +13,10 @@ implementation:
 
 1. enumFromTo isn't vectorizable. This means that code with the order of
 instructions:
+
     a1 = dotp v1 v1
     a2 = dotp v2 v2
     v = [:a1..a2:]
     dotp v v
+
 doesn't work.
