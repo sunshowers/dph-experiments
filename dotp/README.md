@@ -2,7 +2,7 @@ CS497 work on Data Parallel Haskell
 ===================================
 Siddharth Agarwal | Y7429
 
-To build, run `make`. The code has been tested with GHC 6.12.3 on Windows and
+To build, run `make`. The code has been tested with *GHC 6.12.3* on Windows and
 Linux.
 
 The unlifted implementation (non-vectorized) works really well, but can't really
@@ -23,10 +23,10 @@ convert to an `[:Int:]`.
 
 3. The optimizer tended to inline the wrapper function into non-vectorized
 code. We don't want that since it really is the interface between vectorized and
-non-vectorized code. The solution is to mark it as NOINLINE. Ideally we wouldn't
-have to worry about such things at all.
+non-vectorized code. The solution is to mark it as `NOINLINE`. Ideally we
+wouldn't have to worry about such things at all.
 
-4. `enumFromTo` isn't vectorizable. This means that code with the order of
+4. `enumFromTo` isn't vectorizable. This means that the following order of
 instructions doesn't work in purely vectorized code.
 
       a1 = dotp v1 v1
@@ -39,7 +39,7 @@ dot products, then get their results back into non-vectorized code, and finally
 to move to vectorized code again. Unfortunately this sequence of operations
 causes a stack overflow with both `dph-par` and `dph-seq`.
 
-6. So instead of an enumFromTo, I tried to do something like the code below,
+6. So instead of an `enumFromTo`, I tried to do something like the code below,
 (i.e. explicitly doing the enumeration; see commit
 9372997ee12b69f1cd9b6c855052dce2114e66ab). This works with `dph-seq` but not
 with `dph-par`, and hence is a bug in the `dph-par` implementation.
