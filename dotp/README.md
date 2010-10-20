@@ -48,10 +48,9 @@ with `dph-par`, and hence is a bug in the `dph-par` implementation.
 
 The final code I have has this sequence of steps:
 
-1. vsum = parallel term-by-term sum of two arrays
-2. wsum = parallel term-by-term sum of two different arrays
-
-3. result = sum over all elements (term-by-term product of vsum and wsum)
+1. `vsum` = parallel term-by-term sum of two arrays
+2. `wsum` = parallel term-by-term sum of two different arrays
+3. `result` = sum over all elements of the term-by-term product of `vsum` and `wsum`
 
 This is a non-trivial multi-level vectorization, and hence it is good to see it
 working! For arrays of 40 elements each, this sped things up from around 0.175
