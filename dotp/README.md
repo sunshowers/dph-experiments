@@ -53,5 +53,8 @@ The final code I have has this sequence of steps:
 3. `result` = sum over all elements of the term-by-term product of `vsum` and `wsum`
 
 This is a non-trivial multi-level vectorization, and hence it is good to see it
-working! For arrays of 40 elements each, this sped things up from around 0.175
-seconds with -N1 to 0.110 seconds with -N2 on my machine.
+working! For arrays of 40 elements each, this sped things up from around 0.17
+seconds with `-N1` to 0.11 seconds with `-N2` on my machine. For arrays of 100
+elements each, this sped things up from 3.75 seconds with `-N1` to 2.51 seconds
+with `-N2`. This is obviously a lot slower than the unlifted version, but we can
+hope for significant performance improvements in the future.
