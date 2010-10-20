@@ -39,13 +39,12 @@ dot products, then get their results back into non-vectorized code, and finally
 to move to vectorized code again. Unfortunately this sequence of operations
 causes a stack overflow with both `dph-par` and `dph-seq`.
 
-6. So instead of an enumFromTo, I tried to do something like
-
-      dotp_internal [:a, ((I.+) a 1), ((I.+) a 2), ((I.+) a 3):] [:b, ((I.+) b 1), ((I.+) b 2), ((I.+) b 3):]
-
-    (i.e. explicitly doing the enumeration; see commit
+6. So instead of an enumFromTo, I tried to do something like the code below,
+(i.e. explicitly doing the enumeration; see commit
 9372997ee12b69f1cd9b6c855052dce2114e66ab). This works with `dph-seq` but not
 with `dph-par`, and hence is a bug in the `dph-par` implementation.
+
+      dotp_internal [:a, ((I.+) a 1), ((I.+) a 2), ((I.+) a 3):] [:b, ((I.+) b 1), ((I.+) b 2), ((I.+) b 3):]
 
 The final code I have has this sequence of steps:
 
