@@ -12,11 +12,9 @@ The vectorized implementation is really buggy. Problems with the current
 implementation:
 
 1. enumFromTo isn't vectorizable. This means that code with the order of
-instructions:
+instructions doesn't work in purely vectorized code.
 
-    a1 = dotp v1 v1
-    a2 = dotp v2 v2
-    v = [:a1..a2:]
-    dotp v v
-
-doesn't work.
+        a1 = dotp v1 v1
+        a2 = dotp v2 v2
+        v = [:a1..a2:]
+        dotp v v
