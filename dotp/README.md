@@ -41,17 +41,18 @@ causes a stack overflow with both `dph-par` and `dph-seq`.
 
 6. So instead of an enumFromTo, I tried to do something like
 
-      dotp_internal [:a, ((I.+) a 1), ((I.+) a 2), ((I.+) a 3):]
-                    [:b, ((I.+) b 1), ((I.+) b 2), ((I.+) b 3):]
+      dotp_internal [:a, ((I.+) a 1), ((I.+) a 2), ((I.+) a 3):] [:b, ((I.+) b 1), ((I.+) b 2), ((I.+) b 3):]
 
     (i.e. explicitly doing the enumeration; see commit
 9372997ee12b69f1cd9b6c855052dce2114e66ab). This works with `dph-seq` but not
 with `dph-par`, and hence is a bug in the `dph-par` implementation.
 
 The final code I have has this sequence of steps:
-    vsum = parallel term-by-term sum of two arrays
-    wsum = parallel term-by-term sum of two different arrays
-    result = sum over all elements (term-by-term product of vsum and wsum)
+
+1. vsum = parallel term-by-term sum of two arrays
+2. wsum = parallel term-by-term sum of two different arrays
+
+3. result = sum over all elements (term-by-term product of vsum and wsum)
 
 This is a non-trivial multi-level vectorization, and hence it is good to see it
 working! For arrays of 40 elements each, this sped things up from around 0.175
