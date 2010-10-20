@@ -16,10 +16,10 @@ with the current implementation:
 since DPH apparently doesn't support type classes. The workaround is to use
 `Data.Array.Parallel.Prelude.Int.+` or Float.+ etc.
 
-2. Apparently you can't transfer parallel arrays of the type [:Int:] between
+2. Apparently you can't transfer parallel arrays of the type `[:Int:]` between
 vectorized and non-vectorized code. Instead you need to use a wrapper function
 that accepts `PArray Int`, and use `Data.Array.Parallel.Prelude.fromPArrayP` to
-convert to an [:Int:].
+convert to an `[:Int:]`.
 
 3. The optimizer tended to inline the wrapper function into non-vectorized
 code. We don't want that since it really is the interface between vectorized and
