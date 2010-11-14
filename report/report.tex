@@ -25,21 +25,32 @@ from functions without --- help in making these implementations easier and
 faster.
 \end{abstract}
 
-\section{Software Transactional Memory}
+\section{Introduction}
+The computing world today is multi-core. Processor speeds have reached their
+limit, so the only way they can become faster now is by including multiple
+processing units on one chip. The upshot of this is that the problem of
+concurrent programming is now more relevant than ever.
+
+We look at the problem from two different angles:
+\begin{itemize}
+\item Section \ref{sec:stm} will look at solving problems where threads have
+  significant amounts of shared state that is concurrently accessed and mutated.
+\item Section \ref{sec:dph} will look at cases where the algorithm does not
+  require much state to be shared among threads, but otherwise accesses data in
+  non-trivial ways.
+\end{itemize}
+
+\section{Software transactional memory}
+\label{sec:stm}
 
 \subsection{Motivation}
-
-The computing world is becoming multi-core. Processor speeds have reached their
-limits, so the only way to become faster now is to include multiple processing
-units on one chip. The upshot of this is that the problem of concurrent
-programming is now more relevant than ever.
 
 Concurrent programming brings several problems along with it, of which the
 biggest one is the synchronization of access to \textit{shared mutable
   state}. The dominant form of synchronization today is using locks.
 
-Locks are structures with the invariant that only one thread can hold a lock at
-a time. They are a powerful tool but can be very difficult to program
+Locks are structures with the invariant that only one thread can hold one at
+a given instant. They are a powerful tool but can be very difficult to program
 with. Programmers must ensure that operations do not conflict, do not deadlock,
 and that the locking is of the right granularity \cite{Duffy:2010}. In addition,
 locks are not composable: in general, it is not possible to combine thread-safe
@@ -121,6 +132,9 @@ It is perhaps the only STM to now be mature enough to be used in production syst
 \cite{Stewart:2009}. However, work still remains to be done in integrating memory
 transactions with other sorts of transactional providers, such as databases and
 transactional filesystems \cite{SPJ:2006}.
+
+\section{Nested data parallelism}
+\label{sec:dph}
 
 \bibliographystyle{acmtrans}
 \bibliography{report}
