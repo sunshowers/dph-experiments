@@ -1,5 +1,7 @@
 \documentclass[a4paper]{acmtrans2m}
 
+\usepackage{url}
+
 \title{Some Recent Advances in Haskell}
 \author{Siddharth Agarwal | Y7429\\
   Advisor: Dr. Amey Karkare}
@@ -51,8 +53,9 @@ sections of code in which the load and store operations appear to be atomic (all
 happen at once). The earliest transactional memory systems
 (e.g. \cite{Herlihy:1993}) all required specialized hardware support, but
 \textit{software transactional memory (STM)}, which required no hardware support
-beyond the \textit{load-linked/store-conditional} construct \cite{Shavit:1995}
-quickly arose.
+beyond the \textit{load-linked/store-conditional} construct \cite{Shavit:1995}, or
+equivalently the \textit{compare-and-swap} operation \cite{Harris:2003}, quickly
+arose.
 
 \subsection{Language support}
 
@@ -88,8 +91,36 @@ from a few problems \cite{Harris:2005,Duffy:2010}:
 
 \subsection{STM in Haskell}
 
-Haskell, as a pure functional language with controlled mutable state, is
-uniquely suited to software transactions \cite{Harris:2005}.
+Haskell, as a statically-typed pure functional language with limited and
+controlled mutable state, is uniquely suited to software transactions
+\cite{Harris:2005}. In Haskell, any mutation of state has to be done inside a
+function whose type contains the \texttt{IO} monad. What \citeN{Harris:2005}
+propose is a monad for STM operations, called \texttt{STM}.
+
+\begin{itemize}
+\item To minimize \textbf{overhead}, they require that any transactional memory
+  explicitly be declared as \texttt{TVar}. This means that only a very small
+  number of memory locations are transactional, and that each location can contain
+  a separate version number while still not adding much overhead.
+\item To solve the \textbf{I/O} problem, they forbid general I/O operations inside
+  any function marked \texttt{STM}. In Haskell, all I/O operations are marked with
+  the \texttt{IO} monad, and since Haskell is statically-typed, the compiler knows
+  about these operations. This means that I/O can be statically forbidden inside
+  \texttt{STM} sections.
+\item To avert the \textbf{weak vs. strong atomicity} problem, they do not allow
+  transactional memory to be accessed outside \texttt{STM} blocks. All
+  transactional memory must be accessed using the pair of functions
+  \texttt{readTVar} and \texttt{writeTVar}, and since these functions are marked
+  as \texttt{STM}, they can only be called inside \texttt{STM} blocks.
+\end{itemize}
+
+\subsection{Current status and future directions}
+
+Haskell's STM system currently ships with releases of the Glasgow Haskell compiler.
+It is perhaps the only STM to now be mature enough to be used in production systems
+\cite{Stewart:2009}. However, work still remains to be done in integrating memory
+transactions with other sorts of transactional providers, such as databases and
+transactional filesystems \cite{SPJ:2006}.
 
 \bibliographystyle{acmtrans}
 \bibliography{report}
