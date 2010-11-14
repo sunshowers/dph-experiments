@@ -39,9 +39,57 @@ biggest one is the synchronization of access to \textit{shared mutable
 Locks are structures with the invariant that only one thread can hold a lock at
 a time. They are a powerful tool but can be very difficult to program
 with. Programmers must ensure that operations do not conflict, do not deadlock,
-and that the locking is of the right granularity. In addition, locks are not
-composable: in general, it is not possible to combine thread-safe sections of
-code into a larger thread-safe section of code \cite{Harris:2005}.
+and that the locking is of the right granularity \cite{Duffy:2010}. In addition,
+locks are not composable: in general, it is not possible to combine thread-safe
+sections of code into a larger thread-safe section of code \cite{Harris:2005}.
+
+\subsection{Transactional memory systems}
+To combat these issues, several authors have proposed memory systems where the
+fundamental unit of synchronization is the \textit{transaction}
+\cite{Harris:2007}. Transactions, as a concept borrowed from databases, are
+sections of code in which the load and store operations appear to be atomic (all
+happen at once). The earliest transactional memory systems
+(e.g. \cite{Herlihy:1993}) all required specialized hardware support, but
+\textit{software transactional memory (STM)}, which required no hardware support
+beyond the \textit{load-linked/store-conditional} construct \cite{Shavit:1995}
+quickly arose.
+
+\subsection{Language support}
+
+Later, \citeN{Harris:2003} described a system based on critical conditional
+regions (CCR) \cite{Hoare:1972} where transaction support was integrated into
+the Java language syntax. Such systems, while quite successful, still suffered
+from a few problems \cite{Harris:2005,Duffy:2010}:
+
+\begin{itemize}
+\item \textbf{Overhead.} To avoid A-B-A problems, each location of transactional
+  memory needs a version number. Since these systems proposed to make all memory
+  transactional, a naive implementation would mean twice the memory usage. A few
+  solutions were proposed, including having a common version number for a group
+  of words instead of a separate version number for each word
+  \cite{Harris:2003}.
+\item \textbf{I/O.} I/O operations are generally irreversible, which causes
+  problems with transactions (since they might need to roll back). For
+  output-only operations, one might be able to buffer them until one knows the
+  transaction is successful, but that wouldn't work for operations which require
+  input. A different solution is to forbid any I/O operations, but languages
+  like Java do not have any static information about which functions have I/O,
+  so they must detect such cases and abort at run-time.
+\item \textbf{Weak vs. strong atomicity.} These systems did not restrict the
+  same memory location from being accessed both inside and outside transactional
+  sections. One could either guarantee \textit{strong} transactional semantics
+  outside transactional blocks too (which is equivalent to wrapping every
+  non-transactional statement in a one-line transactional block and leads to
+  poor performance), or be \textit{weakly} atomic and make no such
+  guarantees. One could also avert the problem by making the mutable memory
+  accessible inside transactional blocks \textit{disjoint} from mutable memory
+  accessible outside them.
+\end{itemize}
+
+\subsection{STM in Haskell}
+
+Haskell, as a pure functional language with controlled mutable state, is
+uniquely suited to software transactions \cite{Harris:2005}.
 
 \bibliographystyle{acmtrans}
 \bibliography{report}
