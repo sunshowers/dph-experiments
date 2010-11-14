@@ -966,10 +966,11 @@ to\hsize{\if@nfeven\else\hfil\fi\box\@tempboxa\if@nfeven\hfil\fi}
  \vskip 8.5pt \footnotesize \box\@abstract \vskip 4pt\relax %vskip8.5 space above abstract
  {\def\and{\unskip\/{\rm ; }}
 % Categories and Subject Descriptors: \@categories
-\fi}\par\vskip 4pt\relax
+\fi}
+%\par\vskip 4pt\relax
 % \box\@terms \vskip 4pt\relax
 % \box\@keywords \par 
- {\baselineskip 14pt\relax 
+ {\baselineskip 8.5pt\relax 
  \@abstractbottom
  }
  \vskip 23pt\relax
