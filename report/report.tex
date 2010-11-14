@@ -1,0 +1,48 @@
+\documentclass[a4paper]{acmtrans2m}
+
+\title{Some Recent Advances in Haskell}
+\author{Siddharth Agarwal | Y7429\\
+  Advisor: Dr. Amey Karkare}
+\date{\today}
+
+\setcounter{tocdepth}{2}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+\begin{abstract}
+We look at two recently developed software engineering tools currently available
+in Haskell: software transactional memory (along with an implementation in an
+imperative language for comparison), and Haskell's nested data parallel library,
+currently in development. We pay special attention to how Haskell's unique
+features --- in particular, the static separation of functions with side effects
+from functions without --- help in making these implementations easier and
+faster.
+\end{abstract}
+
+\section{Software Transactional Memory}
+
+\subsection{Motivation}
+
+The computing world is becoming multi-core. Processor speeds have reached their
+limits, so the only way to become faster now is to include multiple processing
+units on one chip. The upshot of this is that the problem of concurrent
+programming is now more relevant than ever.
+
+Concurrent programming brings several problems along with it, of which the
+biggest one is the synchronization of access to \textit{shared mutable
+  state}. The dominant form of synchronization today is using locks.
+
+Locks are structures with the invariant that only one thread can hold a lock at
+a time. They are a powerful tool but can be very difficult to program
+with. Programmers must ensure that operations do not conflict, do not deadlock,
+and that the locking is of the right granularity. In addition, locks are not
+composable: in general, it is not possible to combine thread-safe sections of
+code into a larger thread-safe section of code \cite{Harris:2005}.
+
+\bibliographystyle{acmtrans}
+\bibliography{report}
+\end{document}
