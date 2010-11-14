@@ -137,6 +137,24 @@ transactional file systems \cite{SPJ:2006}.
 \section{Nested data parallelism}
 \label{sec:dph}
 
+A different approach to concurrent programming, suitable for certain kinds of
+applications, is via \textit{data parallelism}. Data parallelism is
+characterized by large sets of data on which transformations need to be done,
+and by the fact that these transformations can be done on individual data
+units mostly independently. Such parallelism can be used in a wide variety of
+places, from calculating the dot product of a pair of vectors to blending
+images.
+
+However, traditionally data parallelism libraries require the data to be stored
+as flat arrays. This is fine for simple applications like blending images, but
+can be quite inconvenient to the programmer for anything more complicated. One
+possible way to help the programmer would be to allow nested data structures to
+be provided, transform them into flat structures, operate on them and finally
+convert them back to nested structures; indeed such a solution was proposed in
+the early '90s \cite{Blelloch:1993,Blelloch:1996}. However, this solution required
+the programmer to program in a special language called NESL, and was limited in
+other ways \cite{Chakravarty:2007}.
+
 \bibliographystyle{acmtrans}
 \bibliography{report}
 \end{document}
