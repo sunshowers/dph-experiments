@@ -26,6 +26,8 @@ faster.
 
 \maketitle
 
+\tableofcontents
+
 \section{Introduction}
 The computing world today is multi-core. Processor speeds have reached their
 limit, so the only way they can become faster now is by including multiple
@@ -128,7 +130,7 @@ propose is a monad for STM operations, called \texttt{STM}.
 
 \subsection{Current status and future directions}
 
-Haskell's STM system currently ships with releases of the Glasgow Haskell compiler.
+Haskell's STM system currently ships with releases of the Glasgow Haskell compiler (GHC).
 It is perhaps the only STM to now be mature enough to be used in production systems
 \cite{Stewart:2009}. However, work still remains to be done in integrating memory
 transactions with other sorts of transactional providers, such as databases and
@@ -137,6 +139,7 @@ transactional file systems \cite{SPJ:2006}.
 \section{Nested data parallelism}
 \label{sec:dph}
 
+\subsection{Motivation}
 A different approach to concurrent programming, suitable for certain kinds of
 applications, is via \textit{data parallelism}. Data parallelism is
 characterized by large sets of data on which transformations need to be done,
@@ -147,13 +150,104 @@ images.
 
 However, traditionally data parallelism libraries require the data to be stored
 as flat arrays. This is fine for simple applications like blending images, but
-can be quite inconvenient to the programmer for anything more complicated. One
-possible way to help the programmer would be to allow nested data structures to
-be provided, transform them into flat structures, operate on them and finally
-convert them back to nested structures; indeed such a solution was proposed in
-the early '90s \cite{Blelloch:1993,Blelloch:1996}. However, this solution required
-the programmer to program in a special language called NESL, and was limited in
-other ways \cite{Chakravarty:2007}.
+can be quite inconvenient to the programmer for anything more complicated.
+
+\subsection{Early attempts}
+One possible way to help the programmer to exploit data parallelism would be to
+allow nested data structures to be provided, transform them into flat structures,
+operate on them and finally convert them back to nested structures. Indeed, such a solution was proposed in the early '90s \cite{Blelloch:1993,Blelloch:1996}.
+However, this solution required the programmer to program in a special
+language called NESL, and was limited in other ways \cite{Chakravarty:2007}.
+
+\subsection{Data Parallel Haskell (DPH)}
+
+\citeN{Chakravarty:2007} described a system which takes the key ideas from NESL,
+generalizes them to apply in the larger context of a general-purpose functional
+programming language, and implements them in Haskell. The key insight in NESL was
+the vectorization transformation, which converts a nested data structure into flat
+arrays and transforms functions that apply on these data structures and their
+elements to apply on these arrays. Generalized to Haskell,
+the vectorization transformation is able to operate on user-created unions and
+higher-order functions \cite{SPJ:2008}.
+
+It would be much more difficult to implement vectorizations in a non-pure
+language than in Haskell, because the vectorization transformation assumes and
+requires that the functions be pure. Since in Haskell impure functions are 
+separated at compile-time, the vectorization operation performed by the compiler
+on seeing such functions can raise compile-time errors.
+
+\subsection{Current status}
+Data Parallel Haskell as implemented in shipping versions of the Glasgow Haskell
+compiler is still a work in progress. There are two backends, a sequential backend
+(for reference) and a parallel backend. There are also two interfaces
+provided: an "unlifted" interface, which works well but is equivalent to flat data
+parallelism, and a "lifted" interface, which is capable of performing vectorization
+but is currently quite buggy.
+
+We attempted to implement a simple dot product operation using both the unlifted and
+lifted interfaces, and ran into several problems with the lifted interface:
+
+\begin{enumerate}
+\item The normal operations \texttt{Prelude.+, Prelude.-, Prelude.*} etc aren't vectorizable, since DPH currently doesn't support Haskell type classes. The workaround
+is to use the special operations that DPH provides, e.g. \texttt{Data. Array.Parallel.Prelude.Int.+} or \texttt{Float.+}.
+
+\item Flat arrays of the type \texttt{[:Int:]} cannot yet be transferred between
+vectorized and non-vectorized code. Instead one needs to use a wrapper function
+that accepts \texttt{PArray Int}, and use \texttt{fromPArrayP} to
+convert to an \texttt{[:Int:]}.
+
+\item The optimizer tended to inline the wrapper function into non-vectorized
+code. This is undesirable, since it really is the interface between vectorized and
+non-vectorized code. The solution is to mark the function as \texttt{NOINLINE} 
+\cite{DPHRef}.
+
+\item The enumeration function (\texttt{..} or \texttt{enumFromTo}) isn't
+vectorizable. This means that the following order of instructions doesn't work in
+purely vectorized code.
+
+\begin{verbatim}
+  a1 = dotp v1 v1
+  a2 = dotp v2 v2
+  v = [:a1..a2:]
+  dotp v v
+\end{verbatim}
+
+\item This means that the only way to perform the above set of operations is to
+first perform the individual dot products, then get their results back into
+non-vectorized code, and finally move to vectorized code again. Unfortunately
+this sequence of operations causes a stack overflow with both the parallel and
+sequential versions of Data Parallel Haskell.
+
+\item Because of (4) and (5), we decided to do an explicit enumeration instead 
+of using enumFromTo. This worked with the sequential version of the library but not
+the parallel version.
+\end{enumerate}
+
+We were finally able to get the following sequence of operations working with both
+versions of the data parallel library:
+
+\begin{verbatim}
+  vsum := parallel term-by-term sum of two arrays
+  wsum := parallel term-by-term sum of two different arrays
+  result := sum over all elements of the term-by-term product of
+            vsum and wsum
+\end{verbatim}
+
+With GHC 6.12.3 on Windows 7 with a Core i7 720QM processor, we were able to run the
+program on arrays of 40 and 100 elements each. The speedup observed with 40-element
+arrays was from 0.17 seconds with a single thread to 0.11 seconds with two threads.
+Similarly, the speedup observed with 100-element arrays was from 3.75 seconds with a
+single thread to 2.51 seconds with two threads. Of course, the lifted interface is
+currently quite immature, and we saw the unlifted version perform much faster (less
+than 0.05 seconds in each case).
+
+\subsection{Future directions}
+
+Current work is focused on eliminating bugs from the vectorizer and improving the 
+performance of the parallel backend. There is also a plan to implement a CUDA-based
+backend for Data Parallel Haskell \cite{Dijk:2008}, but that has challenges of its own --- for
+instance, the set of primitive operations available on CUDA is much smaller than the 
+interface provides \cite{Leshchinskiy:2008}.
 
 \bibliographystyle{acmtrans}
 \bibliography{report}
