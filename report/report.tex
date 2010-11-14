@@ -199,7 +199,7 @@ convert to an \texttt{[:Int:]}.
 \item The optimizer tended to inline the wrapper function into non-vectorized
 code. This is undesirable, since it really is the interface between vectorized and
 non-vectorized code. The solution is to mark the function as \texttt{NOINLINE} 
-\cite{DPHRef}.
+\citeA{DPHRef}.
 
 \item The enumeration function (\texttt{..} or \texttt{enumFromTo}) isn't
 vectorizable. This means that the following order of instructions doesn't work in
